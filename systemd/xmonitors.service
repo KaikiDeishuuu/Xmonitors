@@ -1,0 +1,18 @@
+[Unit]
+Description=Xmonitors availability monitor
+After=network.target
+
+[Service]
+Type=simple
+User=xmonitors
+Group=xmonitors
+WorkingDirectory=/opt/xmonitors
+EnvironmentFile=/opt/xmonitors/.env
+ExecStart=/opt/xmonitors/.venv/bin/python -m xmonitors --config /opt/xmonitors/config.json
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

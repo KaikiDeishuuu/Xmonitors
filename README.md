@@ -1,67 +1,83 @@
-# stock-monitor
+# Xmonitors
 
-`stock-monitor` is a small Python service that checks product pages on a fixed interval, tracks stock state in JSON, and sends Telegram alerts only when availability changes.
+Lightweight, configurable stock/product availability monitor with JSON config, JSON state, and Telegram notifications.
 
-## What it does
+## Features
+- Explicit statuses: `IN_STOCK`, `OUT_OF_STOCK`, `UNKNOWN`, `ERROR`, `BLOCKED`
+- Per-item keyword/regex detection with precedence
+- Retry + timeout + backoff + jitter
+- Safe JSON state with atomic writes
+- `.env` support for Telegram secrets
+- CLI modes: `--once`, `--dry-run`, `--check`
+- Docker, docker-compose, and systemd support
 
-- Fetches each product page with `requests`.
-- Classifies stock status from the HTML using generic signals such as `Order Now`, `Add to Cart`, `Configure`, `In Stock`, `Available`, and WHMCS-style availability counts.
-- Persists product state in `state.json`.
-- Sends Telegram messages only on state transitions, with optional first-observation notifications controlled by config.
-
-## Files
-
-- `monitor.py` - the long-running service.
-- `config.example.json` - template config.
-- `config.json` - active config with placeholder Telegram credentials.
-- `state.json` - persisted per-product state.
-- `requirements.txt` - runtime dependencies.
-- `systemd/stock-monitor.service` - sample service unit.
-
-## Setup
-
-1. Create a virtual environment and install dependencies.
-2. Edit `config.json` with your Telegram bot token and chat ID.
-3. Start the monitor with `python3 monitor.py`.
-
-## Docker
-
-Build the image and run the service with bind mounts for config, state, and logs:
-
-```bash
-docker build -t stock-monitor .
-docker run -d --name stock-monitor \
-	--restart unless-stopped \
-	-v "$PWD/config.json:/app/config.json:ro" \
-	-v "$PWD/state.json:/app/state.json" \
-	-v "$PWD/logs:/app/logs" \
-	stock-monitor
-```
-
-Or use Compose:
-
-```bash
-docker compose up -d --build
-```
+## Quick start
+1. `cp .env.example .env`
+2. `cp config.example.json config.json`
+3. Fill `.env` with `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`
+4. `python -m pip install -r requirements.txt`
+5. `python -m xmonitors --once --config config.json`
 
 ## Configuration
+Use `config.example.json` as template. Main sections:
+- `global`: retry/timeout/user-agent/notification defaults
+- `telegram`: enable or disable Telegram delivery
+- `items`: per-target monitoring rules
 
-The config format uses three sections:
+Legacy config is still loaded with a migration warning.
 
-- `telegram` - bot token and chat ID.
-- `request` - timeout and user agent.
-- `monitor` - default interval, jitter, and first-run notification behavior.
-- `products` - the list of pages to monitor.
+## Telegram setup
+- Create bot with BotFather.
+- Get `chat_id` from updates API.
+- Put both values in `.env`.
 
-If `state.json` is missing, the service creates it from `config.json` using each product's `initial_state`.
+## Local Python usage
+- `python -m xmonitors`
+- `python -m xmonitors --config config.json`
+- `python -m xmonitors --once`
+- `python -m xmonitors --dry-run`
+- `python -m xmonitors --check "Example VPS Product"`
 
-## systemd
+## Docker usage
+Build and run:
+- `docker build -t xmonitors .`
+- `docker run --rm --env-file .env -v $(pwd)/config.json:/app/config.json:ro -v $(pwd)/data:/app/data xmonitors`
 
-The sample unit assumes the project lives at `/opt/stock-monitor`. Update `WorkingDirectory` and `ExecStart` if you deploy elsewhere.
+## docker-compose usage
+- `docker compose up -d --build`
+- `docker compose logs -f xmonitors`
 
-## Notes
+## systemd usage
+Use `systemd/xmonitors.service`, then:
+- `sudo systemctl enable --now xmonitors`
+- `journalctl -u xmonitors -f`
 
-- No database is used.
-- Telegram notifications are skipped automatically while the config still contains placeholder credentials.
-- Logs are written to `logs/stock-monitor.log`.
-- Telegram alerts use HTML formatting with a cleaner status header, product metadata, and a clickable product link.
+## CLI options
+- `--config`: config path override
+- `--once`: single pass
+- `--dry-run`: no state write/no notify
+- `--check NAME`: check one item
+
+## Status meanings
+- `IN_STOCK`: positive rule matched
+- `OUT_OF_STOCK`: negative rule matched
+- `BLOCKED`: blocked rule or HTTP 403/429
+- `ERROR`: request failure or server error
+- `UNKNOWN`: no rules matched
+
+## State file explanation
+State defaults to `data/state.json` and stores last status, timestamps, error metadata, and last matched rule metadata.
+
+## Troubleshooting
+- Missing Telegram env vars: notifications skipped.
+- Invalid `state.json`: file is backed up and recreated.
+- Bad regex: item handled without crashing process.
+
+## Security notes
+- Never commit `.env`, `config.json`, `state.json`, or logs.
+- Keep only `config.example.json` and `.env.example` in git.
+
+## Roadmap
+- Optional webhook integrations
+- Better per-item scheduling
+- Optional notification templates
