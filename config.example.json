@@ -1,60 +1,30 @@
 {
+  "global": {
+    "default_interval_seconds": 60,
+    "request_timeout_seconds": 15,
+    "max_retries": 3,
+    "retry_backoff_seconds": 5,
+    "jitter_seconds": 5,
+    "user_agent": "Xmonitors/1.0",
+    "notify_on_error": false,
+    "notify_on_recovery": true
+  },
   "telegram": {
-    "bot_token": "PUT_YOUR_TELEGRAM_BOT_TOKEN_HERE",
-    "chat_id": "PUT_YOUR_TELEGRAM_CHAT_ID_HERE"
+    "enabled": true
   },
-  "request": {
-    "timeout_seconds": 6,
-    "user_agent": "Mozilla/5.0 stock-monitor/1.0"
-  },
-  "monitor": {
-    "default_interval_seconds": 10,
-    "jitter_seconds": 1,
-    "notify_on_first_in_stock": true,
-    "notify_on_first_out_of_stock": false
-  },
-  "products": [
+  "state_path": "data/state.json",
+  "items": [
     {
-      "id": "greencloud-2222-jp-softbank",
-      "provider": "GreenCloudVPS",
-      "display_name": "GreenCloudVPS - 2222 JP SoftBank",
-      "category": "Black Friday",
-      "product_title": "2222 JP",
-      "primary_url": "https://greencloudvps.com/billing/store/black-friday-2024/2222-jp-softbank",
-      "reference_url": "https://greencloudvps.com/billing/store/black-friday-2025",
-      "price_line": "$22.00/year",
-      "spec_line": "2C/2G/22G NVMe/750G@10G",
-      "region_line": "Tokyo, JP / SoftBank",
-      "initial_state": "OUT_OF_STOCK",
-      "interval_seconds": 10
-    },
-    {
-      "id": "greencloud-2222-au",
-      "provider": "GreenCloudVPS",
-      "display_name": "GreenCloudVPS - 2222 AU",
-      "category": "Black Friday 2025",
-      "product_title": "2222 AU",
-      "primary_url": "https://greencloudvps.com/billing/store/black-friday-2025/2222-au",
-      "reference_url": "https://greencloudvps.com/billing/store/black-friday-2025",
-      "price_line": "$22.00/year",
-      "spec_line": "2C/2G/22G NVMe/750G@10G",
-      "region_line": "Sydney, AU",
-      "initial_state": "OUT_OF_STOCK",
-      "interval_seconds": 10
-    },
-    {
-      "id": "greencloud-cn-premium-mini-tokyo",
-      "provider": "GreenCloudVPS",
-      "display_name": "GreenCloudVPS - CN Premium Mini Tokyo",
-      "category": "CN Premium Optimized",
-      "product_title": "CN Premium Optimized Plan Mini (Tokyo)",
-      "primary_url": "https://greencloudvps.com/billing/store/cn-premium-optimized",
-      "reference_url": "https://greencloudvps.com/billing/store/cn-premium-optimized",
-      "price_line": "$25.00/month",
-      "spec_line": "1C/2G/20G NVMe/500G@500M",
-      "region_line": "Tokyo, JP Premium Line (CN2GIA/CU PREMIUM/CMI)",
-      "initial_state": "IN_STOCK",
-      "interval_seconds": 30
+      "name": "Example VPS Product",
+      "url": "https://example.com/product",
+      "enabled": true,
+      "interval_seconds": 60,
+      "positive_keywords": ["Order Now", "Add to Cart", "In Stock", "Available"],
+      "negative_keywords": ["Out of Stock", "Sold Out", "Unavailable"],
+      "blocked_keywords": ["Access Denied", "Too Many Requests", "Just a moment"],
+      "regex": null,
+      "expected_status": "auto",
+      "notify_on_error": false
     }
   ]
 }

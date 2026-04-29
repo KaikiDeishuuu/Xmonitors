@@ -1,9 +1,10 @@
 services:
-  stock-monitor:
+  xmonitors:
     build: .
-    container_name: stock-monitor
+    container_name: xmonitors
     restart: unless-stopped
+    env_file:
+      - .env
     volumes:
       - ./config.json:/app/config.json:ro
-      - ./state.json:/app/state.json
-      - ./logs:/app/logs
+      - ./data:/app/data

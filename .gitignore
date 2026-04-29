@@ -1,8 +1,7 @@
+config.json
+state.json
+.env
+*.log
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.venv/
-venv/
-env/
-logs/*.log
+.pytest_cache/
+data/state.json
