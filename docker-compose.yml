@@ -1,0 +1,9 @@
+services:
+  stock-monitor:
+    build: .
+    container_name: stock-monitor
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/app/config.json:ro
+      - ./state.json:/app/state.json
+      - ./logs:/app/logs

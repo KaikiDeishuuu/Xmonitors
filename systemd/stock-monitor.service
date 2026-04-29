@@ -1,0 +1,15 @@
+[Unit]
+Description=stock-monitor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/stock-monitor
+ExecStart=/usr/bin/python3 /opt/stock-monitor/monitor.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,31 @@
+{
+  "products": {
+    "greencloud-2222-au": {
+      "evidence": "Initialized from config",
+      "last_changed_at": "2026-04-29T15:08:37+08:00",
+      "last_checked_at": null,
+      "last_notified_at": null,
+      "state": "OUT_OF_STOCK",
+      "status_label": "Out of stock",
+      "url": "https://greencloudvps.com/billing/store/black-friday-2025/2222-au"
+    },
+    "greencloud-2222-jp-softbank": {
+      "evidence": "Initialized from config",
+      "last_changed_at": "2026-04-29T15:08:37+08:00",
+      "last_checked_at": null,
+      "last_notified_at": null,
+      "state": "OUT_OF_STOCK",
+      "status_label": "Out of stock",
+      "url": "https://greencloudvps.com/billing/store/black-friday-2024/2222-jp-softbank"
+    },
+    "greencloud-cn-premium-mini-tokyo": {
+      "evidence": "Initialized from config",
+      "last_changed_at": "2026-04-29T15:08:37+08:00",
+      "last_checked_at": null,
+      "last_notified_at": null,
+      "state": "IN_STOCK",
+      "status_label": "In stock",
+      "url": "https://greencloudvps.com/billing/store/cn-premium-optimized"
+    }
+  }
+}
